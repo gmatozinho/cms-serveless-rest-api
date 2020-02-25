@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "description": "Serverless REST API for cms",
   "author": "Gustavo",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "serverless-offline": "^5.12.1"
+  }
 }

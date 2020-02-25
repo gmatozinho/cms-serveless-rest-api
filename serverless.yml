@@ -13,6 +13,9 @@
 
 service: api-rest-cms
 # app and org for use with dashboard.serverless.com
+plugins:
+  - serverless-offline
+
 app: api-rest-cms
 org: gmatozinho
 
@@ -58,8 +61,13 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: functions/login.hello
+  login:
+    handler: functions/login.login
+    events:
+      - http:
+          path: login
+          method: post
+          cors: true
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
