@@ -1,0 +1,7 @@
+{
+  "name": "api-rest-cms",
+  "version": "1.0.0",
+  "description": "Serverless REST API for cms",
+  "author": "Gustavo",
+  "license": "MIT"
+}
