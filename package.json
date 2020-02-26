@@ -5,6 +5,7 @@
   "author": "Gustavo",
   "license": "MIT",
   "dependencies": {
-    "serverless-offline": "^5.12.1"
+    "serverless-offline": "^5.12.1",
+    "serverless-pseudo-parameters": "^2.5.0"
   }
 }

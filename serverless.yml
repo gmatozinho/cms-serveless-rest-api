@@ -15,6 +15,7 @@ service: api-rest-cms
 # app and org for use with dashboard.serverless.com
 plugins:
   - serverless-offline
+  - serverless-pseudo-parameters
 
 app: api-rest-cms
 org: gmatozinho
@@ -26,39 +27,34 @@ org: gmatozinho
 provider:
   name: aws
   runtime: nodejs10.x
+  region: us-east-2
+  stage: dev
+  environment:
+    #aurora
+    AURORA_HOST: ${self:custom.AURORA.HOST}
+    AURORA_PORT: ${self:custom.AURORA.PORT}
+    #common
+    DB_NAME: ${self:custom.DB_NAME}
+    USERNAME: ${self:custom.USERNAME}
+    PASSWORD: ${self:custom.PASSWORD}
 
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
+custom:
+  DB_NAME: CMSDB
+  USERNAME: master
+  PASSWORD: password
+  AURORA:
+    HOST:
+      Fn::GetAtt: [AuroraRDSCluster, Endpoint.Address]
+    PORT:
+      Fn::GetAtt: [AuroraRDSCluster, Endpoint.Port]
+    VPC_CIDR: 10
 
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.js
-#    - exclude-me-dir/**
+resources:
+  Resources:
+    AuroraRDSClusterParameter: ${file(./resource/AuroraRDSClusterParameter.yml)}
+    AuroraRDSInstanceParameter: ${file(./resource/AuroraRDSInstanceParameter.yml)}
+    AuroraRDSCluster: ${file(./resource/AuroraRDSCluster.yml)}
+    AuroraRDSInstance: ${file(./resource/AuroraRDSInstance.yml)}
 
 functions:
   login:
