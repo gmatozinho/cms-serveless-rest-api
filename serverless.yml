@@ -39,9 +39,9 @@ provider:
     PASSWORD: ${self:custom.PASSWORD}
 
 custom:
-  DB_NAME: CMSDB
-  USERNAME: master
-  PASSWORD: password
+  DB_NAME: ${param:DB_NAME}
+  USERNAME: ${param:DB_USERNAME}
+  PASSWORD: ${param:DB_PASSWORD}
   AURORA:
     HOST:
       Fn::GetAtt: [AuroraRDSCluster, Endpoint.Address]
@@ -62,6 +62,14 @@ functions:
     events:
       - http:
           path: login
+          method: post
+          cors: true
+
+  populateDb:
+    handler: scripts/populateDb.populate
+    events:
+      - http:
+          path: populate
           method: post
           cors: true
 #    The following are a few example events you can configure

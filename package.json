@@ -5,7 +5,9 @@
   "author": "Gustavo",
   "license": "MIT",
   "dependencies": {
-    "serverless-offline": "^5.12.1",
-    "serverless-pseudo-parameters": "^2.5.0"
+    "jsonwebtoken": "^8.5.1",
+    "serverless-mysql": "^1.5.3",
+    "serverless-pseudo-parameters": "^2.5.0",
+    "serverless-offline": "^5.12.1"
   }
 }
