@@ -1,8 +1,5 @@
 const jwt = require('jsonwebtoken');
-
-// Set in `environment` of serverless.yml
-const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID;
-const AUTH0_CLIENT_PUBLIC_KEY = process.env.AUTH0_CLIENT_PUBLIC_KEY;
+require('dotenv-safe').config();
 
 // Policy helper function
 const generatePolicy = (principalId, effect, resource) => {
@@ -10,7 +7,7 @@ const generatePolicy = (principalId, effect, resource) => {
   authResponse.principalId = principalId;
   if (effect && resource) {
     const policyDocument = {};
-    policyDocument.Version = '2012-10-17';
+    policyDocument.Version = '2020-12-26';
     policyDocument.Statement = [];
     const statementOne = {};
     statementOne.Action = 'execute-api:Invoke';
@@ -36,12 +33,9 @@ module.exports.auth = (event, context, callback) => {
     // no auth token!
     return callback('Unauthorized');
   }
-  const options = {
-    audience: AUTH0_CLIENT_ID,
-  };
 
   try {
-    jwt.verify(tokenValue, AUTH0_CLIENT_PUBLIC_KEY, options, (verifyError, decoded) => {
+    jwt.verify(tokenValue, process.env.SECRET, (verifyError, decoded) => {
       if (verifyError) {
         console.log('verifyError', verifyError);
         // 401 Unauthorized
@@ -50,7 +44,10 @@ module.exports.auth = (event, context, callback) => {
       }
       // is custom authorizer function
       console.log('valid from customAuthorizer', decoded);
-      return callback(null, generatePolicy(decoded.sub, 'Allow', event.methodArn));
+      if (checkAccessGroup(event.requestContext.resourcePath, decoded.access_group)) {
+        return callback(null, generatePolicy(decoded.id, 'Allow', event.methodArn));
+      }
+      return callback('Unauthorized');
     });
   } catch (err) {
     console.log('catch error. Invalid token', err);
@@ -58,30 +55,17 @@ module.exports.auth = (event, context, callback) => {
   }
 };
 
-// Public API
-module.exports.publicEndpoint = (event, context, callback) => callback(null, {
-  statusCode: 200,
-  headers: {
-      /* Required for CORS support to work */
-    'Access-Control-Allow-Origin': '*',
-      /* Required for cookies, authorization headers with HTTPS */
-    'Access-Control-Allow-Credentials': true,
-  },
-  body: JSON.stringify({
-    message: 'Hi from Public API',
-  }),
-});
+checkAccessGroup = (path, access_group) => {
+  console.log("input", { path, access_group })
+  switch (path) {
+    case "/user": {
+      if (access_group.includes(1)) {
+        return true
+      }
+      return false
+    }
+    default:
+      return false;
+  }
 
-// Private API
-module.exports.privateEndpoint = (event, context, callback) => callback(null, {
-  statusCode: 200,
-  headers: {
-      /* Required for CORS support to work */
-    'Access-Control-Allow-Origin': '*',
-      /* Required for cookies, authorization headers with HTTPS */
-    'Access-Control-Allow-Credentials': true,
-  },
-  body: JSON.stringify({
-    message: 'Hi from Private API. Only logged in users can see this',
-  }),
-});
+}
