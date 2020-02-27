@@ -5,9 +5,14 @@
   "author": "Gustavo",
   "license": "MIT",
   "dependencies": {
+    "dotenv-safe": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
-    "serverless-mysql": "^1.5.3",
     "serverless-pseudo-parameters": "^2.5.0",
+    "uuid": "^7.0.1"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.627.0",
+    "serverless-dynamodb-local": "^0.2.39",
     "serverless-offline": "^5.12.1"
   }
 }
