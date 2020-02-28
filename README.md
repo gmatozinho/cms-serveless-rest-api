@@ -3,11 +3,17 @@
 Serverless api built from a CMS application for learning/apply some serverless and aws infraestructure concepts.
 
 ## Install the serverless cli
+
+```
 npm install -g serverless
+```
 
 ## Init with serverless
+
+```bash
 serverless login
 serverless
+```
 
 ## Use-case
 
@@ -29,4 +35,7 @@ serverless offline start
 ```
 
 ## Deploy
+
+```
 serverless deploy
+```
