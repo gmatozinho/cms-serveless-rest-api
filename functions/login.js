@@ -1,13 +1,13 @@
 'use strict';
 
-const { getUser } = require("./get")
+const { get } = require("./get-user")
 require('dotenv-safe').config();
 var jwt = require('jsonwebtoken');
 
 /* @params - username,password */
 module.exports.login = async event => {
   const data = JSON.parse(event.body);
-  const res = await getUser(data.username);
+  const res = await get(data.username);
 
   if (res && res.statusCode === 200 && data.password === res.body.password) {
     //add id and access group in jwt
@@ -16,7 +16,7 @@ module.exports.login = async event => {
       expiresIn: 3000 // expires in 5min
     });
 
-    return response = {
+    return {
       statusCode: 200,
       body: JSON.stringify({ auth: true, token }),
     };

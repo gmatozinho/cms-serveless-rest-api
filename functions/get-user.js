@@ -2,7 +2,7 @@
 
 const dynamodb_client = require('../db/dynamoClient');
 
-module.exports.getUser = async (username) => {
+module.exports.get = async (username) => {
     const params = {
         TableName: process.env.DYNAMODB_USER_TABLE,
         Key: {
@@ -20,7 +20,7 @@ module.exports.getUser = async (username) => {
         };
     }
 
-    return response = {
+    return {
         statusCode: 200,
         body: result.Item,
     };
